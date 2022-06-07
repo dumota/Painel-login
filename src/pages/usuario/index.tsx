@@ -17,6 +17,18 @@ interface interfaceProps{
 }
 
 
+interface interfaceUsuario{
+    bairro?: string,
+    cpf?: string,
+    email: string,
+    endereco?: string,
+    id: number,
+    nome: string,
+    numero?: string,
+    telefone: string,
+    tipo: string,
+}
+
 
 
 
@@ -24,7 +36,7 @@ interface interfaceProps{
 
 export default function Usuario(props: interfaceProps) {
 
-    const [usuario, setUsuario] = useState([]);
+    const [usuario, setUsuario] = useState<Array<interfaceUsuario>>([]);
     const cookies = parseCookies();
 
 
@@ -40,10 +52,10 @@ export default function Usuario(props: interfaceProps) {
 
         api.get(`/usuarios`,config).then(response=>{
 
-
-
             console.log(response.data);
             setUsuario(response.data);
+
+        }).catch((error)=>{
 
         })
     },[]);
@@ -58,24 +70,45 @@ export default function Usuario(props: interfaceProps) {
 
             <Menu active="usuario" token={props.token}>
                 <>
-                <h1>Usuarios</h1>
-                {usuario.map((user) => {
-                    return (
-                       <ul>
-                           <li>
-                               <p>Nome: {user.nome}</p>
-                               <p>Tipo: {user.tipo}</p>
-                               <p>Email: {user.email}</p>
-                               <p>Telefone: {user.telefone}</p>
-                               <p>CPF: {user.cpf}</p>
-                               <p>Endereço{user.endereco}</p>
-                               <p>Bairro{user.bairro}</p>
+                <div className={"d-flex justify-content-between flex-wrap  flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"}>
+                        <h2>Usuario</h2>
+                        <div className={"btn-toolbar mb-2 mb-0 "}>
+                            <button type="button" className="btn btn-success">Adicionar</button>
+                        </div>
+                    </div>
 
-                           </li>
-                       </ul>
 
-                    )
-                })}
+                       <table className="table table-striped">
+                           <thead>
+                               <tr>
+                                   <th>ID</th>
+                                   <th>Nome</th>
+                                   <th>Email</th>
+                                   <th>Açoes</th>
+
+                               </tr>
+                           </thead>
+                           <tbody>
+                           {
+                               usuario.map((user, index) =>{
+                                   return(
+                                    <tr key={user.id}>
+                                        <td>ID: {user.id}</td>
+                                        <td>Nome: {user.nome}</td>
+                                        <td>Email: {user.email}</td>
+                                        <td>Ações</td>
+                                    </tr>
+                                   )
+                                })
+                           }
+
+
+                           </tbody>
+
+                       </table>
+
+
+
                 </>
             </Menu>
         </>
