@@ -73,7 +73,11 @@ export default function Usuario(props: interfaceProps) {
                 <div className={"d-flex justify-content-between flex-wrap  flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"}>
                         <h2>Usuario</h2>
                         <div className={"btn-toolbar mb-2 mb-0 "}>
-                            <button type="button" className="btn btn-success">Adicionar</button>
+                            <button type="button" className="btn btn-success"
+                            onClick={()=>{router.push('/usuario/criar')}}
+                            >
+                                Adicionar
+                            </button>
                         </div>
                     </div>
 
@@ -96,7 +100,20 @@ export default function Usuario(props: interfaceProps) {
                                         <td>ID: {user.id}</td>
                                         <td>Nome: {user.nome}</td>
                                         <td>Email: {user.email}</td>
-                                        <td>Ações</td>
+                                        <td>
+                                            <button className="btn btn-primary " onClick={() =>{
+                                                router.push('/usuario/' + user.id)
+                                            }} style={{marginLeft:5}}>
+                                                Editar
+                                             </button>
+
+                                            <button className="btn btn-danger" onClick={() =>{
+
+                                            }}>
+                                                Deletar
+
+                                            </button>
+                                        </td>
                                     </tr>
                                    )
                                 })
