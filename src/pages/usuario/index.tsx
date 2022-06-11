@@ -4,8 +4,9 @@ import { parseCookies } from "nookies";
 import { GetServerSideProps } from "next";
 import { Menu } from '../../components/Menu';
 import { validaPermissao } from "../../services/validaPermissao";
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import api from '../../services/request';
+import { AutenticacaoContext } from '../../contexts/AutenticacaoContext';
 
 
 
@@ -34,11 +35,43 @@ interface interfaceUsuario{
 
 
 
+
+
 export default function Usuario(props: interfaceProps) {
 
     const [usuario, setUsuario] = useState<Array<interfaceUsuario>>([]);
     const cookies = parseCookies();
+    const {setLoading} = useContext(AutenticacaoContext);
 
+
+    async function deleteUser (user: interfaceUsuario) {
+        const id = user.id ? user.id :null ;
+        setLoading(true);
+        await api.delete(`usuarios/${id}`,{
+            headers:{
+                Authorization : `Bearer ${props.token}`
+            }
+        }).then((res)=>{
+            console.log(res);
+           
+           
+            
+        }).catch((err)=>{
+            console.log(err);
+            
+        })
+    
+        await api.get('/usuarios', {
+            headers:{
+                Authorization : `Bearer ${props.token}`
+            }
+        }).then((res)=>{
+            setUsuario(res.data);
+             setLoading(false);
+            
+        })
+        
+    }
 
 
 
@@ -50,15 +83,20 @@ export default function Usuario(props: interfaceProps) {
             },
         };
 
+        setLoading(true)
         api.get(`/usuarios`,config).then(response=>{
-
-            console.log(response.data);
+            
             setUsuario(response.data);
+            setLoading(false);
 
         }).catch((error)=>{
 
         })
-    },[]);
+        
+      
+        
+        
+    }, []);
 
     const router = useRouter();
 
@@ -74,7 +112,7 @@ export default function Usuario(props: interfaceProps) {
                         <h2>Usuario</h2>
                         <div className={"btn-toolbar mb-2 mb-0 "}>
                             <button type="button" className="btn btn-success"
-                            onClick={()=>{router.push('/usuario/criar')}}
+                            onClick={()=>{router.push('/usuario/adicionar')}}
                             >
                                 Adicionar
                             </button>
@@ -108,7 +146,7 @@ export default function Usuario(props: interfaceProps) {
                                              </button>
 
                                             <button className="btn btn-danger" onClick={() =>{
-
+                                                deleteUser(user);
                                             }}>
                                                 Deletar
 

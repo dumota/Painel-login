@@ -1,6 +1,10 @@
 import Link from "next/link";
-import { ReactNode } from "react"
+import Router from "next/router";
+import { ReactNode, useContext } from "react"
+import { Cookies } from "react-cookie";
+import { AutenticacaoContext } from "../../contexts/AutenticacaoContext";
 import { validaPermissao } from "../../services/validaPermissao";
+
 
 
 interface IntefacaProps{
@@ -14,10 +18,30 @@ interface IntefacaProps{
 
 export const Menu = ({children, active, token}:IntefacaProps) => {
 
+       const {setLoading} = useContext(AutenticacaoContext);
+       function logout() {
+        setLoading(true);
+        var coockies = document.cookie.split(";");
+        for (let index = 0; index < coockies.length; index++) {
+            var cookie = coockies[index];
+            var eqPos = cookie.indexOf("=");
+            var name = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+              document.cookie = name + "=;expires=Thu, 01 Jan 1970 00:00:00 GMT";  
+            
+                    
+        }
+        
+        setLoading(false);
+        Router.push('/login');
+ 
+    }
+  
+
 
 
     return (
         <>
+        
         <header
              className="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow"
         >
@@ -29,7 +53,7 @@ export const Menu = ({children, active, token}:IntefacaProps) => {
             </a>
             <div className="navbar-nav ">
                 <div className="nav-item text-nowrap">
-                    <a href="#" className="nav-link px-3">Sair</a>
+                    <a href="#" onClick={logout} className="nav-link px-3">Sair</a>
                 </div>
             </div>
         </header>
